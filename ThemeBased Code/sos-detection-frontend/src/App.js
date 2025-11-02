@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import Layout from './components/Layout';
@@ -12,6 +12,7 @@ import HotspotMap from './pages/HotspotMap';
 import Profile from './pages/Profile';
 import About from './pages/About';
 
+// 🌈 Custom Material UI theme
 const theme = createTheme({
   palette: {
     primary: {
@@ -21,37 +22,40 @@ const theme = createTheme({
       main: '#f50057', // Pink
     },
     background: {
-      default: '#f5f5f5',
+      default: '#f5f5f5', // Light gray background
     },
   },
   typography: {
     fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-    h4: {
-      fontWeight: 600,
-    },
-    h5: {
-      fontWeight: 600,
-    },
-    h6: {
-      fontWeight: 600,
-    },
+    h4: { fontWeight: 600 },
+    h5: { fontWeight: 600 },
+    h6: { fontWeight: 600 },
   },
 });
 
+// 🔒 PrivateRoute for future authentication feature
 const PrivateRoute = ({ children }) => {
-  // Add authentication logic here
-  const isAuthenticated = true; // Replace with actual auth check
+  const isAuthenticated = true; // TODO: Replace with actual auth check
   return isAuthenticated ? children : <Navigate to="/login" />;
 };
 
 const App = () => {
+  // 🧠 Side effect to set browser title once app loads
+  useEffect(() => {
+    document.title = "HerWatch – Women Safety Application by Akshay";
+    console.log("🚀 HerWatch App initialized successfully!");
+  }, []);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
         <Routes>
+          {/* Public Routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+
+          {/* Main Layout Routes */}
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
             <Route path="about" element={<About />} />
