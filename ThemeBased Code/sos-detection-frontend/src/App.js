@@ -34,6 +34,7 @@ const theme = createTheme({
 });
 
 // 🔒 PrivateRoute for future authentication feature
+// eslint-disable-next-line no-unused-vars
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = true; // TODO: Replace with actual auth check
   return isAuthenticated ? children : <Navigate to="/login" />;

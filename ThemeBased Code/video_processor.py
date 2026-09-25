@@ -4,7 +4,10 @@ import numpy as np
 from ultralytics import YOLO
 import torchvision.models as models
 import time
-import winsound
+try:
+    import winsound
+except ImportError:
+    winsound = None
 import mediapipe as mp
 
 # Load models
@@ -67,7 +70,7 @@ last_wave_time = 0
 
 def play_alert_sound():
     try:
-        winsound.PlaySound("SystemExclamation", winsound.SND_ALIAS)
+        if winsound: winsound.PlaySound("SystemExclamation", winsound.SND_ALIAS)
     except Exception as e:
         print(f"Could not play alert sound: {e}")
 

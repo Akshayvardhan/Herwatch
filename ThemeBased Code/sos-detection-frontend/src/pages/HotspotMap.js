@@ -19,11 +19,10 @@ import {
 } from '@mui/material';
 import { LocationOn, Warning, Security, MyLocation, WomanOutlined, Shield } from '@mui/icons-material';
 import { motion } from 'framer-motion';
+import { API_BASE_URL } from '../config';
 
 const MotionCard = motion(Card);
 const MotionPaper = motion(Paper);
-
-const API_BASE_URL = 'http://localhost:5000'; // Can be changed based on environment
 
 const HotspotMap = () => {
   const theme = useTheme();
@@ -55,12 +54,12 @@ const HotspotMap = () => {
         setApiStatus('error');
       }
     };
-    
+
     checkApiStatus();
-    
+
     // Set up a periodic check every 30 seconds
     const intervalId = setInterval(checkApiStatus, 30000);
-    
+
     // Clean up interval on component unmount
     return () => clearInterval(intervalId);
   }, []);
@@ -147,9 +146,9 @@ const HotspotMap = () => {
 
   // Location Dialog
   const LocationDialog = () => (
-    <Dialog 
-      open={showLocationDialog} 
-      maxWidth="sm" 
+    <Dialog
+      open={showLocationDialog}
+      maxWidth="sm"
       fullWidth
       PaperProps={{
         sx: {
@@ -159,8 +158,8 @@ const HotspotMap = () => {
         }
       }}
     >
-      <DialogTitle sx={{ 
-        textAlign: 'center', 
+      <DialogTitle sx={{
+        textAlign: 'center',
         fontWeight: 600,
         background: theme.palette.primary.main,
         color: 'white',
@@ -221,7 +220,7 @@ const HotspotMap = () => {
   );
 
   return (
-    <Box sx={{ 
+    <Box sx={{
       minHeight: '100vh',
       background: 'linear-gradient(rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.05))',
       pt: 4,
@@ -234,7 +233,7 @@ const HotspotMap = () => {
             Cannot connect to the API server. Please make sure the backend is running at {API_BASE_URL}.
           </Alert>
         )}
-        
+
         {/* Enhanced Header Section */}
         <MotionPaper
           initial={{ opacity: 0, y: -20 }}
@@ -254,7 +253,7 @@ const HotspotMap = () => {
           }}
         >
           <Box sx={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', gap: 3 }}>
-            <Box sx={{ 
+            <Box sx={{
               width: 100,
               height: 100,
               borderRadius: '50%',
@@ -268,7 +267,7 @@ const HotspotMap = () => {
               <WomanOutlined sx={{ fontSize: 60, filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }} />
             </Box>
             <Box>
-              <Typography variant="h2" component="h1" sx={{ 
+              <Typography variant="h2" component="h1" sx={{
                 fontWeight: 800,
                 textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
                 mb: 1,
@@ -279,7 +278,7 @@ const HotspotMap = () => {
               }}>
                 HerWatch
               </Typography>
-              <Typography variant="h4" sx={{ 
+              <Typography variant="h4" sx={{
                 fontWeight: 600,
                 textShadow: '1px 1px 2px rgba(0,0,0,0.3)',
                 mb: 2,
@@ -287,7 +286,7 @@ const HotspotMap = () => {
               }}>
                 Safety Map & Risk Analysis
               </Typography>
-              <Typography variant="h6" sx={{ 
+              <Typography variant="h6" sx={{
                 opacity: 0.95,
                 maxWidth: 600,
                 lineHeight: 1.4,
@@ -300,7 +299,7 @@ const HotspotMap = () => {
 
           {/* Stats Section */}
           <Box sx={{ mt: 4, display: 'flex', gap: 3 }}>
-            <Box sx={{ 
+            <Box sx={{
               flex: 1,
               p: 2,
               borderRadius: 2,
@@ -312,7 +311,7 @@ const HotspotMap = () => {
               border: '1px solid rgba(255,255,255,0.2)',
               boxShadow: '0 4px 30px rgba(0,0,0,0.1)',
             }}>
-              <Shield sx={{ 
+              <Shield sx={{
                 fontSize: 40,
                 filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))',
               }} />
@@ -321,7 +320,7 @@ const HotspotMap = () => {
                 <Typography variant="body1" sx={{ opacity: 0.9 }}>Real-time risk assessment</Typography>
               </Box>
             </Box>
-            <Box sx={{ 
+            <Box sx={{
               flex: 1,
               p: 2,
               borderRadius: 2,
@@ -333,7 +332,7 @@ const HotspotMap = () => {
               border: '1px solid rgba(255,255,255,0.2)',
               boxShadow: '0 4px 30px rgba(0,0,0,0.1)',
             }}>
-              <LocationOn sx={{ 
+              <LocationOn sx={{
                 fontSize: 40,
                 filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))',
               }} />
@@ -351,7 +350,7 @@ const HotspotMap = () => {
             <MotionCard
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              sx={{ 
+              sx={{
                 height: '100%',
                 boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
                 borderRadius: 3,
@@ -395,9 +394,9 @@ const HotspotMap = () => {
                         Select a location to view the safety map
                       </Typography>
                       {!showLocationDialog && (
-                        <Button 
-                          variant="outlined" 
-                          onClick={reopenLocationDialog} 
+                        <Button
+                          variant="outlined"
+                          onClick={reopenLocationDialog}
                           sx={{ mt: 2 }}
                         >
                           Change Location
@@ -413,7 +412,7 @@ const HotspotMap = () => {
           {/* Hotspot List */}
           <Grid item xs={12} md={4}>
             <Box sx={{ position: 'sticky', top: 20 }}>
-              <Typography variant="h6" gutterBottom sx={{ 
+              <Typography variant="h6" gutterBottom sx={{
                 fontWeight: 600,
                 display: 'flex',
                 alignItems: 'center',
@@ -434,11 +433,11 @@ const HotspotMap = () => {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    sx={{ 
+                    sx={{
                       mb: 2,
                       borderLeft: 6,
-                      borderColor: hotspot.TOTAL_CRIMES > 100 ? 'error.main' : 
-                                  hotspot.TOTAL_CRIMES > 50 ? 'warning.main' : 'success.main',
+                      borderColor: hotspot.TOTAL_CRIMES > 100 ? 'error.main' :
+                        hotspot.TOTAL_CRIMES > 50 ? 'warning.main' : 'success.main',
                     }}
                   >
                     <CardContent>
@@ -451,7 +450,7 @@ const HotspotMap = () => {
                       <Typography variant="body2" color="text.secondary" gutterBottom>
                         {hotspot['STATE/UT']}
                       </Typography>
-                      <Box sx={{ 
+                      <Box sx={{
                         display: 'flex',
                         alignItems: 'center',
                         mb: 1,
@@ -461,15 +460,15 @@ const HotspotMap = () => {
                       }}>
                         <Warning
                           sx={{
-                            color: hotspot.TOTAL_CRIMES > 100 ? 'error.main' : 
-                                  hotspot.TOTAL_CRIMES > 50 ? 'warning.main' : 'success.main',
+                            color: hotspot.TOTAL_CRIMES > 100 ? 'error.main' :
+                              hotspot.TOTAL_CRIMES > 50 ? 'warning.main' : 'success.main',
                             mr: 1,
                           }}
                         />
                         <Typography variant="body2" color="text.secondary">
                           Risk Level: {
                             hotspot.TOTAL_CRIMES > 100 ? 'High' :
-                            hotspot.TOTAL_CRIMES > 50 ? 'Medium' : 'Low'
+                              hotspot.TOTAL_CRIMES > 50 ? 'Medium' : 'Low'
                           }
                         </Typography>
                       </Box>
@@ -488,7 +487,7 @@ const HotspotMap = () => {
                 <MotionPaper
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  sx={{ 
+                  sx={{
                     p: 3,
                     textAlign: 'center',
                     bgcolor: 'rgba(0,0,0,0.02)',
@@ -500,9 +499,9 @@ const HotspotMap = () => {
                     {mapUrl ? "No risk areas found nearby" : "Select a location to view safety analysis"}
                   </Typography>
                   {!showLocationDialog && !mapUrl && (
-                    <Button 
-                      variant="outlined" 
-                      onClick={reopenLocationDialog} 
+                    <Button
+                      variant="outlined"
+                      onClick={reopenLocationDialog}
                       sx={{ mt: 2 }}
                     >
                       Select Location

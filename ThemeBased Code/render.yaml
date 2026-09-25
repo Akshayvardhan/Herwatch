@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: herwatch-backend
+    env: docker
+    dockerfilePath: ./Dockerfile
+    rootDir: ./ThemeBased Code
+    plan: free
+    region: singapore
+    envVars:
+      - key: PORT
+        value: 5001
+      - key: FLASK_ENV
+        value: production

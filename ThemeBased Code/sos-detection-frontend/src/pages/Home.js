@@ -7,14 +7,10 @@ import {
   Button,
   Card,
   CardContent,
-  CardMedia,
   useTheme,
 } from '@mui/material';
 import {
-  Gesture,
-  Person,
   LocationOn,
-  People,
   Security,
   Speed,
   Support,

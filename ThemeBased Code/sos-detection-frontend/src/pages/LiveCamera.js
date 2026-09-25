@@ -24,6 +24,7 @@ import {
   Group,
 } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
+import { API_BASE_URL, WS_BASE_URL } from '../config';
 
 const MotionCard = motion(Card);
 const MotionPaper = motion(Paper);
@@ -52,10 +53,10 @@ const LiveCamera = () => {
   const fetchAvailableCameras = async () => {
     try {
       console.log('Fetching available cameras...');
-      const response = await fetch('http://localhost:5000/api/live-camera/list');
+      const response = await fetch(`${API_BASE_URL}/api/live-camera/list`);
       const data = await response.json();
       console.log('Available cameras:', data);
-      
+
       if (data.cameras && Array.isArray(data.cameras)) {
         setAvailableCameras(data.cameras);
         if (data.cameras.length > 0) {
@@ -98,14 +99,14 @@ const LiveCamera = () => {
       }
 
       console.log('Starting camera with device ID:', selectedCamera);
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { 
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
           deviceId: selectedCamera ? { exact: selectedCamera } : undefined,
           width: { ideal: 1280 },
           height: { ideal: 720 }
         }
       });
-      
+
       streamRef.current = stream;
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
@@ -139,8 +140,8 @@ const LiveCamera = () => {
 
     try {
       // Initialize WebSocket connection
-      wsRef.current = new WebSocket('ws://localhost:5000/ws/camera');
-      
+      wsRef.current = new WebSocket(`${WS_BASE_URL}/ws/camera`);
+
       wsRef.current.onopen = () => {
         console.log('WebSocket connection established');
         // Start sending frames
@@ -165,7 +166,7 @@ const LiveCamera = () => {
             ...data.detection,
             timestamp: new Date().toISOString()
           }, ...prev].slice(0, 50)); // Keep last 50 detections
-          
+
           // Update progress
           setProgress(prev => Math.min(prev + 1, 100));
         } else if (data.type === 'analysis_complete') {
@@ -230,20 +231,20 @@ const LiveCamera = () => {
                   playsInline
                 />
                 {isAnalyzing && (
-                <Box
-                  sx={{
-                    position: 'absolute',
+                  <Box
+                    sx={{
+                      position: 'absolute',
                       top: '50%',
                       left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        display: 'flex',
+                      transform: 'translate(-50%, -50%)',
+                      display: 'flex',
                       flexDirection: 'column',
-                        alignItems: 'center',
-                      }}
-                    >
+                      alignItems: 'center',
+                    }}
+                  >
                     <CircularProgress />
                     <Typography variant="caption" color="white">Analyzing...</Typography>
-                </Box>
+                  </Box>
                 )}
               </Box>
               {isAnalyzing && (
@@ -260,7 +261,7 @@ const LiveCamera = () => {
           <MotionCard initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }}>
             <CardContent>
               <Typography variant="h5" sx={{ mb: 3 }}>Live Camera Analysis</Typography>
-              
+
               <FormControl fullWidth sx={{ mb: 2 }}>
                 <InputLabel>Select Camera</InputLabel>
                 <Select
@@ -286,25 +287,25 @@ const LiveCamera = () => {
               >
                 Start Camera
               </Button>
-                <Button
-                  variant="contained"
+              <Button
+                variant="contained"
                 color="primary"
                 onClick={analyzeLiveCamera}
                 disabled={!isCameraActive || isAnalyzing}
-                  fullWidth
+                fullWidth
                 sx={{ mb: 2 }}
-                >
+              >
                 {isAnalyzing ? 'Analyzing...' : 'Start Analysis'}
-                </Button>
-                <Button
-                  variant="outlined"
+              </Button>
+              <Button
+                variant="outlined"
                 color="secondary"
                 onClick={stopCamera}
                 disabled={!isCameraActive || isAnalyzing}
                 fullWidth
               >
                 Stop Camera
-                </Button>
+              </Button>
 
               {analysisResults && (
                 <Box sx={{ mt: 4 }}>
@@ -316,9 +317,9 @@ const LiveCamera = () => {
                     <Typography variant="body2">More Men Detections: {analysisResults.moreMenDetections}</Typography>
                     <Typography variant="body2">
                       Detection Rate: {(analysisResults.detectionRate * 100).toFixed(2)}%
-              </Typography>
+                    </Typography>
                   </Paper>
-              </Box>
+                </Box>
               )}
 
               <Typography variant="h6" sx={{ mt: 4, mb: 2 }}>Recent Detections</Typography>

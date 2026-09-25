@@ -20,6 +20,7 @@ import {
   Group,
 } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
+import { API_BASE_URL } from '../config';
 
 const MotionCard = motion(Card);
 const MotionPaper = motion(Paper);
@@ -66,7 +67,7 @@ const VideoMode = () => {
       formData.append('time', selectedTime);
 
       console.log('Sending video for analysis...');
-      const response = await fetch('http://localhost:5000/analyze_video', {
+      const response = await fetch(`${API_BASE_URL}/analyze_video`, {
         method: 'POST',
         body: formData,
       });
