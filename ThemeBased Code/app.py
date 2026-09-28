@@ -127,23 +127,49 @@ def analyze_hotspots():
             axis=1
         )
 
-        # Filter nearby hotspots (within 100km)
+        # Filter nearby hotspots (within 100km default)
         MAX_DISTANCE_KM = 100
         nearby_hotspots = df_copy[df_copy["distance"] <= MAX_DISTANCE_KM].sort_values(by="distance")
         print(f"Found {len(nearby_hotspots)} hotspots within {MAX_DISTANCE_KM}km")
 
+        is_safe_zone = False
+        # If no hotspots within 100km, fallback to nearest regional hotspots
         if nearby_hotspots.empty:
-            return jsonify({"error": "No hotspots found in the area"}), 404
-        
+            print("No hotspots within 100km, showing closest regional hotspots...")
+            nearby_hotspots = df_copy.sort_values(by="distance").head(5)
+            is_safe_zone = True
+
+        # Calculate map zoom based on distance
+        min_dist = nearby_hotspots["distance"].min() if not nearby_hotspots.empty else 100
+        if min_dist < 20:
+            zoom_start = 12
+        elif min_dist < 60:
+            zoom_start = 10
+        elif min_dist < 150:
+            zoom_start = 8
+        else:
+            zoom_start = 6
+
         # Create map
         print("Creating map...")
-        crime_map = folium.Map(location=[user_lat, user_lon], zoom_start=8)
+        crime_map = folium.Map(location=[user_lat, user_lon], zoom_start=zoom_start)
 
         # Add user location marker
+        user_popup = "Your Location - No high-risk hotspots within 100km (Relatively Safe Area)" if is_safe_zone else "Your Location"
         folium.Marker(
             [user_lat, user_lon],
-            popup="Your Location",
-            icon=folium.Icon(color="blue")
+            popup=user_popup,
+            icon=folium.Icon(color="green" if is_safe_zone else "blue", icon="info-sign")
+        ).add_to(crime_map)
+
+        # Draw a 10km safety buffer circle around user
+        folium.Circle(
+            location=[user_lat, user_lon],
+            radius=10000,
+            color="#2ecc71" if is_safe_zone else "#3498db",
+            fill=True,
+            fill_opacity=0.15,
+            popup="Immediate Area (10 km radius)"
         ).add_to(crime_map)
 
         # Add hotspot markers
@@ -182,7 +208,8 @@ def analyze_hotspots():
         hotspots_json = nearby_hotspots[["STATE/UT", "DISTRICT", "TOTAL_CRIMES", "distance"]].to_dict('records')
         return jsonify({
             "hotspots": hotspots_json,
-            "map_url": f"/static/{map_filename}"
+            "map_url": f"/static/{map_filename}",
+            "is_safe_zone": is_safe_zone
         })
 
     except Exception as e:

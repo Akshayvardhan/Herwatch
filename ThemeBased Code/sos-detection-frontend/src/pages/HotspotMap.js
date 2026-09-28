@@ -33,6 +33,7 @@ const HotspotMap = () => {
   const [showLocationDialog, setShowLocationDialog] = useState(true);
   const [hotspots, setHotspots] = useState([]);
   const [mapUrl, setMapUrl] = useState(null);
+  const [isSafeZone, setIsSafeZone] = useState(false);
   const [apiStatus, setApiStatus] = useState('unknown');
 
   useEffect(() => {
@@ -105,6 +106,7 @@ const HotspotMap = () => {
       }
 
       setHotspots(data.hotspots);
+      setIsSafeZone(!!data.is_safe_zone);
       setMapUrl(`${API_BASE_URL}${data.map_url}`);
       setShowLocationDialog(false);
     } catch (err) {
@@ -200,8 +202,16 @@ const HotspotMap = () => {
           Use Current Location
         </Button>
         {currentLocation && (
-          <Alert severity="success" sx={{ mb: 2 }}>
-            Current location obtained: {currentLocation.latitude.toFixed(6)}, {currentLocation.longitude.toFixed(6)}
+          <Alert
+            severity="success"
+            sx={{ mb: 2 }}
+            action={
+              <Button color="inherit" size="small" onClick={() => setCurrentLocation(null)}>
+                Clear
+              </Button>
+            }
+          >
+            Current location obtained: {currentLocation.latitude.toFixed(4)}, {currentLocation.longitude.toFixed(4)}
           </Alert>
         )}
       </DialogContent>
@@ -343,6 +353,12 @@ const HotspotMap = () => {
             </Box>
           </Box>
         </MotionPaper>
+
+        {isSafeZone && mapUrl && (
+          <Alert severity="success" sx={{ mb: 3, borderRadius: 2 }}>
+            🛡️ <strong>Safe Vicinity:</strong> No high-risk crime hotspots recorded within 100km of your location. Showing nearest regional monitoring points.
+          </Alert>
+        )}
 
         <Grid container spacing={3}>
           {/* Map Section with Enhanced Styling */}
