@@ -9,11 +9,7 @@ try:
 except ImportError:
     winsound = None
 import mediapipe as mp
-
-# Load models
-yolo_model = YOLO("yolov8n.pt")
-gender_model = models.mobilenet_v2(pretrained=True)
-gender_model.eval()
+from models_loader import get_yolo_model, get_gender_model, get_holistic_model
 
 # Constants
 GENDER_LABELS = ["Male", "Female"]
@@ -24,15 +20,8 @@ FRAME_SKIP = 3  # Process every 3rd frame to speed up processing
 MAX_FRAMES = 1000  # Limit the number of frames to process
 FACE_HEIGHT_RATIO = 0.6  # Increased from 0.4 to 0.6 for better face detection
 
-# Mediapipe Init
+# Mediapipe Init (enums only)
 mp_holistic = mp.solutions.holistic
-holistic = mp_holistic.Holistic(
-    min_detection_confidence=0.7,
-    min_tracking_confidence=0.7,
-    model_complexity=2,
-    enable_segmentation=True,
-    static_image_mode=False  # Added for better real-time tracking
-)
 
 # Constants for gesture detection
 GESTURE_COOLDOWN = 2.0  # Reduced from 3.0 to 2.0 seconds
@@ -103,7 +92,7 @@ def classify_gender(face_img):
         face_tensor = torch.tensor(face_img, dtype=torch.float32).permute(2, 0, 1).unsqueeze(0) / 255.0
         
         with torch.no_grad():
-            output = gender_model(face_tensor)
+            output = get_gender_model()(face_tensor)
         
         pred_idx = output.argmax().item()
         confidence = torch.softmax(output, dim=1)[0][pred_idx].item()
@@ -318,7 +307,7 @@ def process_video_combined(video_path, time_str):
                     print(f"Processing frame {processed_frames}/{max_frames_to_process} ({frame_count}/{total_frames})")
 
                 # ---- YOLO: Person Detection ----
-                results = yolo_model(frame)
+                results = get_yolo_model()(frame)
                 persons = []
                 for result in results:
                     for box in result.boxes:
@@ -418,7 +407,7 @@ def process_video_combined(video_path, time_str):
                 # Only process every 3rd frame for MediaPipe to save time
                 if frame_count % 3 == 0:
                     rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                    results_mediapipe = holistic.process(rgb_frame)
+                    results_mediapipe = get_holistic_model().process(rgb_frame)
                     gestures = detect_sos_gesture(results_mediapipe)
                     
                     # Force SOS detection for testing - with specific gesture types

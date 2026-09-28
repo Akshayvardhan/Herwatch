@@ -4,7 +4,9 @@ FROM python:3.10-slim
 # Set environment variables
 ENV PYTHONUNBUFFERED=1 \
     DEBIAN_FRONTEND=noninteractive \
-    PORT=5001
+    PORT=5001 \
+    TORCH_HOME=/tmp/torch \
+    YOLO_CONFIG_DIR=/tmp/Ultralytics
 
 # Install system dependencies for OpenCV, MediaPipe, PyTorch
 RUN apt-get update && apt-get install -y --no-install-recommends \

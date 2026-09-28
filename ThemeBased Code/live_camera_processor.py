@@ -9,11 +9,7 @@ try:
 except ImportError:
     winsound = None
 import mediapipe as mp
-
-# Load models
-yolo_model = YOLO("yolov8n.pt")
-gender_model = models.mobilenet_v2(pretrained=True)
-gender_model.eval()
+from models_loader import get_yolo_model, get_gender_model, get_holistic_model
 
 # Constants
 GENDER_LABELS = ["Male", "Female"]
@@ -22,9 +18,8 @@ PERSON_CONFIDENCE_THRESHOLD = 0.2  # Lowered from 0.3 to 0.2
 GENDER_CONFIDENCE_THRESHOLD = 0.1  # Lowered from 0.2 to 0.1
 FRAME_SKIP = 3  # Process every 3rd frame to maintain real-time performance
 
-# Mediapipe Init
+# Mediapipe Init (enums only)
 mp_holistic = mp.solutions.holistic
-holistic = mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5)
 
 # Time Trackers
 last_alert_time = 0
@@ -61,7 +56,7 @@ def classify_gender(face_img):
         face_tensor = torch.tensor(face_img, dtype=torch.float32).permute(2, 0, 1).unsqueeze(0) / 255.0
         
         with torch.no_grad():
-            output = gender_model(face_tensor)
+            output = get_gender_model()(face_tensor)
         
         pred_idx = output.argmax().item()
         confidence = torch.softmax(output, dim=1)[0][pred_idx].item()
@@ -238,7 +233,7 @@ def process_live_camera(frame):
         detections = []
         
         # ---- YOLO: Person Detection ----
-        results = yolo_model(frame)
+        results = get_yolo_model()(frame)
         persons = []
         for result in results:
             for box in result.boxes:
@@ -304,7 +299,7 @@ def process_live_camera(frame):
 
         # ---- MediaPipe: SOS Gesture Detection ----
         rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        results_mediapipe = holistic.process(rgb_frame)
+        results_mediapipe = get_holistic_model().process(rgb_frame)
         gestures = detect_sos_gesture(results_mediapipe)
         
         for gesture in gestures:
