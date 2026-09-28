@@ -366,12 +366,14 @@ def serve_file(filename):
 
 @app.route('/')
 def index():
-    """Serve the index.html file"""
-    try:
+    """Serve index.html if present, else return API status"""
+    if os.path.exists('index.html'):
         return send_from_directory('.', 'index.html')
-    except Exception as e:
-        print(f"Error serving index.html: {str(e)}")
-        return jsonify({"error": "Index file not found"}), 404
+    return jsonify({
+        "status": "online",
+        "service": "HerWatch AI Backend",
+        "version": "1.0.0"
+    }), 200
 
 def process_frame(frame_data):
     try:
