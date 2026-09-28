@@ -1,0 +1,15 @@
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+sos-detection-frontend/
+*.pdf
+.git/
+.gitignore
+.DS_Store
+uploads/*
+!uploads/.gitkeep
+static/temp_*
