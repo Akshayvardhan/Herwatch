@@ -10,5 +10,6 @@ Pillow
 geopy
 pandas
 folium
-mediapipe
+protobuf<=4.25.9
+mediapipe==0.10.14
 ultralytics

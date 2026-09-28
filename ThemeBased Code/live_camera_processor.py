@@ -8,8 +8,7 @@ try:
     import winsound
 except ImportError:
     winsound = None
-import mediapipe as mp
-from models_loader import get_yolo_model, get_gender_model, get_holistic_model
+from models_loader import get_yolo_model, get_gender_model, get_holistic_model, get_mp_holistic
 
 # Constants
 GENDER_LABELS = ["Male", "Female"]
@@ -19,7 +18,7 @@ GENDER_CONFIDENCE_THRESHOLD = 0.1  # Lowered from 0.2 to 0.1
 FRAME_SKIP = 3  # Process every 3rd frame to maintain real-time performance
 
 # Mediapipe Init (enums only)
-mp_holistic = mp.solutions.holistic
+mp_holistic = get_mp_holistic()
 
 # Time Trackers
 last_alert_time = 0

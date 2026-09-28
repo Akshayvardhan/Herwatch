@@ -8,8 +8,7 @@ try:
     import winsound
 except ImportError:
     winsound = None
-import mediapipe as mp
-from models_loader import get_yolo_model, get_gender_model, get_holistic_model
+from models_loader import get_yolo_model, get_gender_model, get_holistic_model, get_mp_holistic
 
 # Constants
 GENDER_LABELS = ["Male", "Female"]
@@ -21,7 +20,7 @@ MAX_FRAMES = 1000  # Limit the number of frames to process
 FACE_HEIGHT_RATIO = 0.6  # Increased from 0.4 to 0.6 for better face detection
 
 # Mediapipe Init (enums only)
-mp_holistic = mp.solutions.holistic
+mp_holistic = get_mp_holistic()
 
 # Constants for gesture detection
 GESTURE_COOLDOWN = 2.0  # Reduced from 3.0 to 2.0 seconds
